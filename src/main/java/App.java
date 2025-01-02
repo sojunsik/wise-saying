@@ -1,37 +1,24 @@
-import wiseSaying.SystemController;
 import wiseSaying.WiseSaying;
 import wiseSaying.WiseSayingController;
+import wiseSaying.WiseSayingService;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class App {
-
-
-    // final이므로 반드시 생성자에서 초기화
-    private final WiseSayingController wiseSayingController;
-    private final SystemController systemController;
-
-    public App() {
-        // 외부에서 Scanner 객체를 만든 후, WiseSayingController 생성자에 전달
-        Scanner scanner = new Scanner(System.in);
-        wiseSayingController = new WiseSayingController(scanner);
-        systemController = new SystemController();
-    }
-
+    // Controller 안에 Service를 주입해줄 것이므로,
+    // App에서 Service도 생성한다.
     public void run() {
+        Scanner scanner = new Scanner(System.in);
+        WiseSayingService wiseSayingService = new WiseSayingService();
+        WiseSayingController wiseSayingController = new WiseSayingController(scanner, wiseSayingService);
+
         System.out.println(" == 명언 앱 ==");
 
-
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
+        while(true) {
             System.out.print("명령) ");
             String command = scanner.nextLine();
 
             if (command.equals("종료")) {
-                systemController.exit();
                 break;
             }
             else if (command.equals("등록")) {
