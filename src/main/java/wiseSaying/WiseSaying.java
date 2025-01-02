@@ -1,13 +1,13 @@
 package wiseSaying;
 
 public class WiseSaying {
-    int id;
-    String author;
-    String content;
+    public int id;
+    public String content;
+    public String author;
 
-    public WiseSaying(int id, String author, String content) {
+    public WiseSaying(int id, String content, String author) {
         this.id = id;
-        this.author = author;
         this.content = content;
+        this.author = author;
     }
 }

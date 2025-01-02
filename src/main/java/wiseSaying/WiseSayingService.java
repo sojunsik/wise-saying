@@ -1,38 +1,55 @@
 package wiseSaying;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class WiseSayingService {
-    private List<WiseSaying> wiseSayings = new ArrayList<>();
-    private int count = 1;
+    private final WiseSayingRepository wiseSayingRepository;
+    private int count = 1;  // 자동 증가 ID
 
-    // 명언 추가
-    public void addWiseSaying(String content, String author) {
+    public WiseSayingService(WiseSayingRepository wiseSayingRepository) {
+        this.wiseSayingRepository = wiseSayingRepository;
+    }
+
+    // 명언 등록
+    public WiseSaying add(String content, String author) {
+        // ID 자동 증가 처리
         WiseSaying ws = new WiseSaying(count, content, author);
-        wiseSayings.add(ws);
+        wiseSayingRepository.save(ws);
+
         System.out.println(count + "번 명언이 등록되었습니다.");
         count++;
+
+        return ws;
     }
 
-    // 모든 명언 조회
+    // 전체 명언 조회
     public List<WiseSaying> getAll() {
-        return wiseSayings;
+        return wiseSayingRepository.findAll();
     }
 
-    // 명언 삭제
+    // ID로 명언 삭제
     public boolean deleteById(int targetId) {
-        // removeIf로 삭제 시도 → 성공 여부(boolean) 반환
-        return wiseSayings.removeIf(ws -> ws.id == targetId);
+        return wiseSayingRepository.deleteById(targetId);
     }
 
-    // 명언 하나 찾기
+    // ID로 명언 찾기
     public WiseSaying findById(int targetId) {
-        for (WiseSaying ws : wiseSayings) {
-            if (ws.id == targetId) {
-                return ws;
-            }
+        return wiseSayingRepository.findById(targetId);
+    }
+
+    // 수정 기능 (나중에 DB 업데이트를 고려)
+    public WiseSaying update(int id, String newContent, String newAuthor) {
+        // 1) 엔티티 찾기
+        WiseSaying ws = wiseSayingRepository.findById(id);
+        if (ws == null) {
+            return null;
         }
-        return null; // 없으면 null
+        // 2) 필드 수정
+        ws.content = newContent;
+        ws.author = newAuthor;
+        // 3) Repository에 반영 (DB/파일이면 실제 UPDATE 수행)
+        wiseSayingRepository.update(ws);
+
+        return ws;
     }
 }
